@@ -1,4 +1,4 @@
-The ![nmap scan before the network setup] (initial-network recon.png) Nmap scan found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to VMs on the “pentest” network. Picture A shows the DHCP server configuration, and the before-and-after Nmap results show the difference.
+The ![nmap scan before setup](initial-network recon.png) Nmap scan found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to VMs on the “pentest” network. Picture A shows the DHCP server configuration, and the before-and-after Nmap results show the difference.
 
 This is the results preconfiguration, you can see that my eth0 has not got an inet, netmask or broadcast ip
 ```bash
