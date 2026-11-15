@@ -2,7 +2,7 @@ As you can see nmap found only one open port, raising the possibility of a netwo
 
 ![Nmap scan before setup](initial-network-recon.png)
 
-This is the results preconfiguration, you can see that my eth0 has not got an inet, netmask or broadcast ip
+Before configuration, eth0 had no IPv4 address. eth1 had an IPv4 address, but it was not on the intended lab subnet, so it wasn’t the interface I planned to use.
 ```bash
 ifconfig
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
@@ -36,7 +36,8 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 
 --------------------------------------------------------------------------------------------------------------------------------
-After configuration results, you can see numerous ports open compared to the initial output.
+
+Below you can see the command i ran to configure the virtualbox dhcp to enable the internal network to automatically obtain IPv4 address.
 ```bash
 VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
 ```
@@ -67,7 +68,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX packets 88  bytes 6960 (6.7 KiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
-
+After configuration results, you can see numerous ports open compared to the initial output.
 nmap scan after.
 ```bash
 nmap -sV -sS 192.168.56.11
@@ -106,5 +107,6 @@ Service Info: Hosts:  metasploitable.localdomain, irc.Metasploitable.LAN; OSs: U
 Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
 Nmap done: 1 IP address (1 host up) scanned in 11.93 seconds
 ```
-
+summary:
+above you see that I've found an issue with the output from nmap and realised it was a virtual box dhcp missing issue and resolved it.
 
