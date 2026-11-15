@@ -1,6 +1,11 @@
-As you can see nmap found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to VMs on the “pentest” network. Picture A shows the DHCP server configuration, and the before-and-after Nmap results show the difference.
-
-![Nmap scan before setup](initial-network-recon.png)
+Note: This process was split between 2 days and the output of initial-network-recon.png results show the pentest vm may have been connecting to a different host or network path. as for the newer scans where eth0 did not have an IPv4 address, this was when i realised the virtual box did not have a DHCP server configured. I have used the image of nmap scan as I did not have a screen shot of the terminal from yesterday.
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+As you can see nmap found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox, i realised that the metasploitable vm is supposed to have numerouse open and exploitable ports hence how i came to the conclusion there may be an network issue. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to the VMs on the “pentest” network.
+```bash
+VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
+```
+before 
+![pre-network-configurations](initial-network-recon.png)
 
 Before configuration, eth0 had no IPv4 address. eth1 had an IPv4 address, but it was not on the intended lab subnet, so it wasn’t the interface I planned to use.
 ```bash
@@ -37,10 +42,8 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Below you can see the command i ran to configure the virtualbox dhcp to enable the internal network to automatically obtain IPv4 address.
-```bash
-VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
-```
+Below you can see the command i ran to configure the virtualbox dhcp to enable the internal network to automatically obtain IPv4 addresses.
+
 ```bash
 ifconfig
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
@@ -108,5 +111,5 @@ Service detection performed. Please report any incorrect results at https://nmap
 Nmap done: 1 IP address (1 host up) scanned in 11.93 seconds
 ```
 summary:
-above you see that I've found an issue with the output from nmap and realised it was a virtual box dhcp missing issue and resolved it.
+This troubleshooting took place over two days. My initial scan showed one open port, but it may have reached a different host or network path, so I treated it as a clue. The following day, I found that the Pentester VM’s eth0 interface had no IPv4 address on the intended pentest Internal Network. I configured a VirtualBox DHCP server for that network. Afterward, eth0 received 192.168.56.10, and I could scan Metasploitable at 192.168.56.11. The scan found 23 open TCP ports in Nmap’s scan.
 
