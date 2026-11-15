@@ -1,4 +1,79 @@
+The initial Nmap scan found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to VMs on the “pentest” network. Picture A shows the DHCP server configuration, and the before-and-after Nmap results show the difference.
+
+this is the results preconfiguration, you can see that my eth0 has not got an ip address.
+```bash
+ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        ether 08:00:27:2d:02:59  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.3.15  netmask 255.255.255.0  broadcast 10.0.3.255
+        inet6 fe80::a00:27ff:fe46:52a0  prefixlen 64  scopeid 0x20<link>
+        inet6 fd17:625c:f037:3:a00:27ff:fe46:52a0  prefixlen 64  scopeid 0x0<global>
+        inet6 fd17:625c:f037:3:7d27:6afc:9389:54ff  prefixlen 64  scopeid 0x0<global>
+        ether 08:00:27:46:52:a0  txqueuelen 1000  (Ethernet)
+        RX packets 20  bytes 5003 (4.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 39  bytes 5644 (5.5 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 88  bytes 6960 (6.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 88  bytes 6960 (6.7 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------
 ```bash
 VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
 ```
+after configuration results, you can see the plethora of ports open 
+```bash
+nmap -sV -sS 192.168.56.11
+Starting Nmap 7.991 ( https://nmap.org ) at 2026-11-15 13:34 +0000
+Unable to determine any DNS servers. . Falling back to --system-dns. Specify valid servers with --dns-servers
+Nmap scan report for 192.168.56.11
+Host is up (0.000064s latency).
+Not shown: 977 closed tcp ports (reset)
+PORT     STATE SERVICE     VERSION
+21/tcp   open  ftp         vsftpd 2.3.4
+22/tcp   open  ssh         OpenSSH 4.7p1 Debian 8ubuntu1 (protocol 2.0)
+23/tcp   open  telnet      Linux telnetd
+25/tcp   open  smtp        Postfix smtpd
+53/tcp   open  domain      ISC BIND 9.4.2
+80/tcp   open  http        Apache httpd 2.2.8 ((Ubuntu) DAV/2)
+111/tcp  open  rpcbind     2 (RPC #100000)
+139/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+445/tcp  open  netbios-ssn Samba smbd 3.X - 4.X (workgroup: WORKGROUP)
+512/tcp  open  exec        netkit-rsh rexecd
+513/tcp  open  login       OpenBSD or Solaris rlogind
+514/tcp  open  shell       Netkit rshd
+1099/tcp open  java-rmi    GNU Classpath grmiregistry
+1524/tcp open  bindshell   Metasploitable root shell
+2049/tcp open  nfs         2-4 (RPC #100003)
+2121/tcp open  ftp         ProFTPD 1.3.1
+3306/tcp open  mysql       MySQL 5.0.51a-3ubuntu5
+5432/tcp open  postgresql  PostgreSQL DB 8.3.0 - 8.3.7
+5900/tcp open  vnc         VNC (protocol 3.3)
+6000/tcp open  X11         (access denied)
+6667/tcp open  irc         UnrealIRCd
+8009/tcp open  ajp13       Apache Jserv (Protocol v1.3)
+8180/tcp open  http        Apache Tomcat/Coyote JSP engine 1.1
+MAC Address: 08:00:27:E0:5A:3D (Oracle VirtualBox virtual NIC)
+Service Info: Hosts:  metasploitable.localdomain, irc.Metasploitable.LAN; OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 11.93 seconds
+```
+
 
