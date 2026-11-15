@@ -41,8 +41,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 --------------------------------------------------------------------------------------------------------------------------------
 
-Below you can see the command i ran to configure the virtualbox dhcp to enable the internal network to automatically obtain IPv4 addresses.
-
+Below is the output showing kali linux vm's eth0 interface successfully obtain IPv4 address through the DHCP server configured on virtual box's internal network.
 ```bash
 ifconfig
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
@@ -70,7 +69,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
         TX packets 88  bytes 6960 (6.7 KiB)
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
-After configuration results, you can see numerous ports open compared to the initial output.
+After configuration results, you can see 23 ports open compared to the initial output.
 nmap scan after.
 ```bash
 nmap -sV -sS 192.168.56.11
