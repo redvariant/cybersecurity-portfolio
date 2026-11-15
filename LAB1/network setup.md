@@ -4,7 +4,6 @@ As you can see nmap found only one open port, raising the possibility of a netwo
 ```bash
 VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
 ```
-before 
 ![pre-network-configurations](initial-network-recon.png)
 
 Before configuration, eth0 had no IPv4 address. eth1 had an IPv4 address, but it was not on the intended lab subnet, so it wasn’t the interface I planned to use.
