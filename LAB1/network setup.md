@@ -34,7 +34,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 
 --------------------------------------------------------------------------------------------------------------------------------
-After configuration results, you can see the plethora of ports open 
+After configuration results, you can see numerous ports open compared to the initial output.
 ```bash
 VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
 ```
