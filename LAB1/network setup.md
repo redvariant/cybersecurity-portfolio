@@ -1,6 +1,6 @@
 The initial Nmap scan found only one open port, raising the possibility of a network configuration issue with either the Metasploitable VM or VirtualBox. I traced the problem to the VirtualBox Internal Network: it did not have a DHCP server configured. I added one from the host terminal using the command below, which assigned addresses to VMs on the “pentest” network. Picture A shows the DHCP server configuration, and the before-and-after Nmap results show the difference.
 
-this is the results preconfiguration, you can see that my eth0 has not got an ip address.
+This is the results preconfiguration, you can see that my eth0 has not got an inet, netmask or broadcast ip
 ```bash
 ifconfig
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
@@ -34,10 +34,39 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 
 --------------------------------------------------------------------------------------------------------------------------------
+After configuration results, you can see the plethora of ports open 
 ```bash
 VBoxManage dhcpserver add --network="pentest" --server-ip=192.168.56.2 --netmask=255.255.255.0 --lower-ip=192.168.56.10 --upper-ip=192.168.56.100 --enable
 ```
-after configuration results, you can see the plethora of ports open 
+```bash
+ifconfig
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.56.10  netmask 255.255.255.0  broadcast 192.168.56.255
+        inet6 fe80::a00:27ff:fe2d:259  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:2d:02:59  txqueuelen 1000  (Ethernet)
+        RX packets 3  bytes 1770 (1.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 16  bytes 1926 (1.8 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        ether 08:00:27:46:52:a0  txqueuelen 1000  (Ethernet)
+        RX packets 57  bytes 10285 (10.0 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 76  bytes 9210 (8.9 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 88  bytes 6960 (6.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 88  bytes 6960 (6.7 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+nmap scan after.
 ```bash
 nmap -sV -sS 192.168.56.11
 Starting Nmap 7.991 ( https://nmap.org ) at 2026-11-15 13:34 +0000
